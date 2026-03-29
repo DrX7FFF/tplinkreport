@@ -1,0 +1,2 @@
+tplinkrouterc6u
+python-dotenv
