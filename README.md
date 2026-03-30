@@ -12,9 +12,7 @@ Testé sur **TP-Link Archer AX53 v1.0**. Devrait fonctionner sur tout routeur su
 ```bash
 git clone https://github.com/DrX7FFF/tplinkreport
 cd tplinkreport
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+install.sh
 ```
 
 ## Configuration
