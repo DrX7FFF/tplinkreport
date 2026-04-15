@@ -82,8 +82,9 @@ def save_json(records, path):
 
 def save_md(records, path):
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
+    count = len(records)
     lines = [
-        f'# Carte réseau — {now}',
+        f'# Carte réseau - {count} entrées - {now}',
         '',
         '| Hostname | IP | Interface | DHCP | Réservé | Dernière vue | MAC | Commentaire |',
         '|---|---|---|:---:|:---:|---|---|---|',
