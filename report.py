@@ -39,8 +39,8 @@ def build_records(devices, leases, reservations, existing):
     # MACs vues actives (connectées ou bail actif)
     active_macs = set(device_macs.keys()) | set(lease_macs.keys())
 
-    # Union des 3 sources
-    all_macs = active_macs | set(reservation_macs.keys())
+    # Union des 3 sources + historique existant
+    all_macs = active_macs | set(reservation_macs.keys()) | set(existing.keys())
 
     for mac in all_macs:
         existing_entry = existing.get(mac, {})
