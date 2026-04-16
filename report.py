@@ -55,7 +55,6 @@ def normalize_mac(mac):
     return str(mac).upper()
 
 def build_records(devices, leases, reservations, existing):
-    now = datetime.now().strftime('%Y-%m-%d %H:%M')
     records = {}
 
     lease_macs       = {normalize_mac(l.macaddr): l for l in leases}
@@ -116,10 +115,10 @@ def build_records(devices, leases, reservations, existing):
     return records
 
 def save_md(records, path):
-    now = datetime.now().strftime('%Y-%m-%d %H:%M')
+    # now = datetime.now().strftime('%Y-%m-%d %H:%M')
     count = len(records)
     lines = [
-        f'# Carte réseau - {count} entrées - {now}',
+        f'# Carte réseau - {count} entrées',
         '',
         '| Hostname | IP | Interface | DHCP | Réservé | Vu | MAC | Commentaire |',
         '|---|---|---|:---:|:---:|:---:|---|---|',
