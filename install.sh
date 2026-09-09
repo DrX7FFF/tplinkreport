@@ -12,9 +12,7 @@ pip install -r "$REPO_DIR/requirements.txt"
 mkdir -p ~/.local/bin
 cat > ~/.local/bin/tplinkreport << EOF
 #!/bin/bash
-cd $REPO_DIR
-source .venv/bin/activate
-python3 report.py
+$REPO_DIR/.venv/bin/python $REPO_DIR/report.py
 EOF
 chmod +x ~/.local/bin/tplinkreport
 
