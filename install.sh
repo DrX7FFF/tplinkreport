@@ -1,4 +1,5 @@
 #!/bin/bash
+# Installation idempotent
 set -e
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"

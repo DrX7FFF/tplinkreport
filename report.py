@@ -6,7 +6,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from tplinkrouterc6u import TplinkRouterProvider, ClientException
 from requests.exceptions import ConnectTimeout
-
+from espvault import EspVault
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -147,7 +147,9 @@ from tplinkrouterc6u import TplinkRouterProvider, AuthorizeError, ClientError
 def main():
     load_dotenv(os.path.join(SCRIPT_DIR, '.env'))
     url      = os.getenv('ROUTER_URL', 'http://192.168.1.1')
-    password = os.getenv('ROUTER_PASSWORD') or getpass.getpass(f'Mot de passe routeur ({url}) : ')
+    # password = os.getenv('ROUTER_PASSWORD') or getpass.getpass(f'Mot de passe routeur ({url}) : ')
+    vault = EspVault()
+    password = vault.get_secret("router")
 
     # print('Connexion au routeur...')
     try:
