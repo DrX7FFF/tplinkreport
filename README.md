@@ -22,14 +22,12 @@ La configuration est optionnelle. Sans fichier `.env`, le script utilise les val
 Pour éviter de ressaisir les paramètres à chaque fois, créer un fichier `.env` dans le dossier du script :
 ```
 ROUTER_URL=http://192.168.1.1
-ROUTER_PASSWORD=votre_mot_de_passe
 REPORT_FILE=~/tplinkreport/network.md
 ```
 
 | Variable | Défaut | Description |
 |---|---|---|
 | `ROUTER_URL` | `http://192.168.1.1` | URL de l'interface web du routeur |
-| `ROUTER_PASSWORD` | _(demandé au lancement)_ | Mot de passe du routeur |
 | `REPORT_FILE` | `network.md` dans le dossier du script | Chemin complet du fichier rapport |
 
 ## Utilisation
