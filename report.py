@@ -9,12 +9,13 @@ from requests.exceptions import ConnectTimeout
 from espvault import EspVault
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+IFACE_MAP = {'wired': 'Eth', 'host_2g': '2G', 'host_5g': '5G', 'host_6g': '6G'}
 
 def load_existing(path):
     """
     Relit le tableau Markdown existant pour extraire, par MAC,
-    les colonnes saisies manuellement : 'vu' et 'comment'.
-    Format attendu : | Hostname | IP | Interface | DHCP | Réservé | Vu | MAC | Commentaire |
+    la colonne saisie manuellement : 'vu'.
+    Format attendu : | Hostname | IP | Inter | DHCP | Res | View | MAC |
     """
     result = {}
     if not os.path.exists(path):
@@ -25,8 +26,8 @@ def load_existing(path):
             if not line.startswith('|') or '---' in line:
                 continue
             cells = [c.strip() for c in line.split('|')]
-            # cells[0] = '' (avant le premier |), cells[1..8], cells[9] = ''
-            if len(cells) < 9:
+            # cells[0] = '' (avant le premier |), cells[1..7], cells[8] = ''
+            if len(cells) < 8:
                 continue
             # Ignorer l'entête
             if cells[7].upper() == 'MAC':
@@ -38,7 +39,6 @@ def load_existing(path):
                     'ip':        cells[2].strip(),
                     'interface': cells[3].strip(),
                     'vu':        cells[6].strip(),
-                    'comment':   cells[8].strip(),
                 }
     return result
 
@@ -69,14 +69,13 @@ def build_records(devices, leases, reservations, existing):
 
     for mac in all_macs:
         existing_entry = existing.get(mac, {})
-        comment = existing_entry.get('comment', '')
 
         # Colonne Vu : X = exclu de surveillance (jamais écrasé)
         existing_vu = existing_entry.get('vu', '')
         if existing_vu.upper() == 'X':
             vu = 'X'
         elif mac in active_macs:
-            vu = 'O'
+            vu = 'Y'
         else:
             vu = 'N'
 
@@ -85,7 +84,7 @@ def build_records(devices, leases, reservations, existing):
             d = device_macs[mac]
             hostname  = d.hostname or ''
             ip        = str(d.ipaddr)
-            interface = d.type.value
+            interface = IFACE_MAP.get(d.type.value, d.type.value)
         elif mac in lease_macs:
             l = lease_macs[mac]
             hostname  = l.hostname or ''
@@ -106,22 +105,17 @@ def build_records(devices, leases, reservations, existing):
             'hostname':  hostname,
             'ip':        ip,
             'interface': interface,
-            'dhcp':      'O' if mac in lease_macs else 'N',
-            'reserved':  'O' if mac in reservation_macs else 'N',
+            'dhcp':      'Y' if mac in lease_macs else 'N',
+            'reserved':  'Y' if mac in reservation_macs else 'N',
             'vu':        vu,
-            'comment':   comment,
         }
 
     return records
 
 def save_md(records, path):
-    # now = datetime.now().strftime('%Y-%m-%d %H:%M')
-    count = len(records)
     lines = [
-        f'# Carte réseau - {count} entrées',
-        '',
-        '| Hostname | IP | Interface | DHCP | Réservé | Vu | MAC | Commentaire |',
-        '|---|---|---|:---:|:---:|:---:|---|---|',
+        '| Hostname | IP | Inter | DHCP | Res | View | MAC |',
+        '|---|---|:---:|:---:|:---:|:---:|---|',
     ]
 
     def sort_key(item):
@@ -131,14 +125,13 @@ def save_md(records, path):
             return [999, 999, 999, 999]
 
     for mac, r in sorted(records.items(), key=sort_key):
-        iface = r['interface'].replace('host_', '').upper() if r['interface'] else ''
-        iface = iface.replace('WIRED', 'Wired')
         lines.append(
-            f"| {r['hostname']} | {r['ip']} | {iface} "
-            f"| {r['dhcp']} | {r['reserved']} | {r['vu']} | {mac} | {r['comment']} |"
+            f"| {r['hostname']} | {r['ip']} | {r['interface']} "
+            f"| {r['dhcp']} | {r['reserved']} | {r['vu']} | {mac} |"
         )
 
-    lines.append('')
+    lines += ['', f'Total : {len(records)}  ', 'Inter : Interface  ', 'Res : IP Reserved Y/N  ',
+              'V : Viewed Y/N or X: manually adjusted to not be monitored', '']
     with open(path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines))
 
@@ -170,7 +163,7 @@ def main():
 
     save_md(records, report_file)
 
-    print(f'Rapport généré : {report_file} ({len(records)} entrées)')
+    # print(f'Rapport généré : {report_file} ({len(records)} entrées)')
 
 if __name__ == '__main__':
     main()

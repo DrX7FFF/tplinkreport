@@ -38,7 +38,7 @@ python3 report.py
 
 ## Fichier généré
 
-`network.md` — tableau Markdown trié par IP, servant à la fois de rapport consultable et de source de vérité. Relu à chaque lancement pour conserver les colonnes `Vu` et `Commentaire` modifiées manuellement. Les équipements déjà connus restent dans le rapport même après expiration de leur bail DHCP.
+`network.md` — tableau Markdown trié par IP, servant à la fois de rapport consultable et de source de vérité. Relu à chaque lancement pour conserver la colonne `View` modifiée manuellement. Les équipements déjà connus restent dans le rapport même après expiration de leur bail DHCP.
 
 ## Colonnes du rapport
 
@@ -46,13 +46,12 @@ python3 report.py
 |---|---|
 | Hostname | Nom de l'appareil tel que retourné par le routeur |
 | IP | Adresse IP |
-| Interface | `Wired`, `2G`, `5G` |
-| DHCP | `O` si un bail DHCP est actif, `N` sinon (IP statique probable) |
-| Réservé | `O` si une réservation MAC→IP est configurée sur le routeur |
-| Vu | `O` si l'équipement est actuellement sur le réseau, `N` sinon, `X` pour exclure la surveillance |
+| Inter | `Eth`, `2G`, `5G` |
+| DHCP | `Y` si un bail DHCP est actif, `N` sinon (IP statique probable) |
+| Res | `Y` si une réservation MAC→IP est configurée sur le routeur |
+| View | `Y` si l'équipement est actuellement sur le réseau, `N` sinon, `X` pour exclure la surveillance |
 | MAC | Adresse MAC |
-| Commentaire | Champ libre, à renseigner manuellement dans `network.md`, conservé entre les lancements |
 
-### Colonne Vu — valeur `X`
+### Colonne View — valeur `X`
 
-Mettre `X` dans la colonne `Vu` pour un équipement permet d'exclure sa surveillance : la valeur ne sera jamais mise à jour (ni `O` ni `N`), ce qui évite le bruit dans les diffs git pour les appareils épisodiques (PC portable, téléphone invité…). Le hostname, l'IP et le commentaire restent quant à eux toujours mis à jour normalement.
+Mettre `X` dans la colonne `View` pour un équipement permet d'exclure sa surveillance : la valeur ne sera jamais mise à jour (ni `Y` ni `N`), ce qui évite le bruit dans les diffs git pour les appareils épisodiques (PC portable, téléphone invité…). Le hostname et l'IP restent quant à eux toujours mis à jour normalement.
