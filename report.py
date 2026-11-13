@@ -43,8 +43,7 @@ def load_existing(path):
     return result
 
 def fetch_data(url, password):
-    client = TplinkRouterProvider.get_client(url, password, timeout=5)
-    client.authorize()
+    client = TplinkRouterProvider.get_client_safe(url, password, timeout=5)
     status       = client.get_status()
     leases       = client.get_ipv4_dhcp_leases()
     reservations = client.get_ipv4_reservations()
